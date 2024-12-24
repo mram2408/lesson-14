@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Автопарк</title>
+    <link rel="stylesheet" href="./stylesheets/style.css" />
+    <script defer src="./javascripts/RequestManager.js"></script>
+    <script defer src="./javascripts/Cars.js"></script>
+    <script defer src="./javascripts/Pagination.js"></script>
+    <script src="./javascripts/Auth.js"></script>
+
+    <script>
+      function onDeleteCar(id) {
+        console.log(id);
+
+        RequestManager.deleteRequest("/autopark/deleteCar", { id: id });
+      }
+    </script>
+    <style>
+      .info {
+        background-color: rgb(0, 145, 255);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Шапка -->
+    <header>
+      <h1>Автопарк</h1>
+      <nav id="navbar">
+        <a href="./index.html">Головна</a>
+        <a href="./about.html">Про нас</a>
+        <a href="./autopark.html?page=0&perPage=4"
+          ><strong>До автопарку</strong></a
+        >
+        <a href="./autoparkScroll.html">До автопарку (scroll)</a>
+
+        <!-- <% if(user) { %>
+        <a href="/auth/logout">Вихід (<%= user.username %>)</a>
+        <% } else { %>
+        <a href="/auth/login">Увійти</a>
+        <% } %> -->
+      </nav>
+    </header>
+    <!-- Основний контент з картками -->
+    <main>
+      <h2>Доступні автомобілі</h2>
+      <!-- <a href="/autopark/add">
+        <button>⊕ Додати новий автомобіль</button>
+      </a>
+      <a href="/autopark/owners/add">
+        <button>⊕ Додати нового власника</button>
+      </a>
+      <a href="/autopark/owners">
+        <button class="info">🛈 Власники</button>
+      </a> -->
+
+      <div class="row">
+        <aside>
+          <div>Сортувати за маркою</div>
+          <label>
+            <select id="sort-select">
+              <option value="az">A-Z</option>
+              <option value="za">Z-A</option>
+            </select>
+          </label>
+          <div>Рік випуску</div>
+          <label> Від: <input type="number" id="year-from" /> </label>
+          <label> До: <input type="number" id="year-to" /> </label>
+          <button id="search-button">Знайти</button>
+        </aside>
+        <div class="car-cards" id="cars-container"></div>
+      </div>
+
+      <div id="pagination"></div>
+    </main>
+
+    <script>
+      // Отримати значення параметра sort з URL
+      const queryParams = new URLSearchParams(window.location.search);
+      const sortValue = queryParams.get("sort") || "az"; // Значення за замовчуванням "az"
+
+      // Встановити значення select на основі параметра sort
+      document.getElementById("sort-select").value = sortValue;
+
+      document
+        .getElementById("sort-select")
+        .addEventListener("change", function (event) {
+          const selectedValue = event.target.value;
+          console.log("Selected value:", selectedValue);
+
+          // Оновити параметри запиту в URL
+          queryParams.set("sort", selectedValue);
+          window.history.pushState(
+            {},
+            "",
+            `${window.location.pathname}?${queryParams.toString()}`
+          );
+          window.location.reload();
+        });
+
+      document
+        .getElementById("search-button")
+        .addEventListener("click", function () {
+          const yearFrom = document.getElementById("year-from").value;
+          const yearTo = document.getElementById("year-to").value;
+
+          if (yearFrom) {
+            queryParams.set("yearFrom", yearFrom);
+          } else {
+            queryParams.delete("yearFrom");
+          }
+
+          if (yearTo) {
+            queryParams.set("yearTo", yearTo);
+          } else {
+            queryParams.delete("yearTo");
+          }
+
+          window.history.pushState(
+            {},
+            "",
+            `${window.location.pathname}?${queryParams.toString()}`
+          );
+          window.location.reload();
+        });
+    </script>
+
+    <!-- Футер -->
+    <footer>
+      <p>&copy; 2024 Автопарк "АвтоЛюкс". Всі права захищені.</p>
+    </footer>
+  </body>
+</html>

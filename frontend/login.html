@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Вхід</title>
+    <!-- Підключення необхідних JavaScript файлів -->
+    <script src="./javascripts/RequestManager.js"></script>
+    <script src="./javascripts/LoginApiManager.js"></script>
+  </head>
+  <body>
+    <h1>Вхід</h1>
+    <!-- Форма входу -->
+    <form id="login-form">
+      <!-- Поле для введення електронної пошти -->
+      <div>
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" required />
+      </div>
+      <!-- Поле для введення пароля -->
+      <div>
+        <label for="password">Пароль:</label>
+        <input type="password" name="password" id="password" required />
+      </div>
+      <!-- Кнопка для надсилання форми -->
+      <button type="submit">Увійти</button>
+    </form>
+    <!-- Контейнер для повідомлень -->
+    <div id="messages"></div>
+    <!-- Контейнер для помилок -->
+    <div id="errors"></div>
+    <script>
+      // Додаємо обробник події для форми входу
+      document
+        .getElementById("login-form")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault(); // Запобігаємо звичайному надсиланню форми
+
+          // Отримуємо дані з форми
+          const form = event.target;
+          const formData = {
+            email: form.email.value,
+            password: form.password.value,
+          };
+
+          try {
+            // Виконуємо запит на авторизацію через LoginApiManager
+            const response = await LoginApiManager.login(formData, (data) => {
+              // Зберігаємо токен у localStorage
+              localStorage.setItem("jwt_token", data.token);
+            });
+          } catch (error) {
+            // Відображаємо повідомлення про помилку у разі невдалої авторизації
+            document.getElementById("messages").innerText =
+              "Помилка входу: " + error.message;
+          }
+        });
+    </script>
+  </body>
+</html>
