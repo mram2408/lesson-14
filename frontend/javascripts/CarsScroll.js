@@ -1,5 +1,5 @@
 let user;
-const baseUrl = "http://localhost:3000/api/v1/uploads/";
+const baseUrl = "https://lesson-14.onrender.com/api/v1/uploads/";
 const token = localStorage.getItem("jwt_token");
 document.addEventListener("DOMContentLoaded", async () => {
   function decodeToken(token) {
